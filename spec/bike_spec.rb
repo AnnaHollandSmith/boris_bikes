@@ -1,4 +1,4 @@
-#describe the bike class
+##describe the bike class
 
 require 'bike'
 

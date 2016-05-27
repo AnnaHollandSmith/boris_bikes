@@ -1,4 +1,5 @@
 require 'Van'
+require 'Garage'
 
 describe Van do 
   describe '#collect_broken_bikes' do
@@ -31,6 +32,20 @@ describe Van do
       van = Van.new
       expect(van.collect_broken_bikes(station)).to eq [bike1]
     end
+
+     describe '#drops_broken_bikes' do
+    it 'drops single broken bike to garage' do
+      station = DockingStation.new(1)
+      bike = Bike.new
+      bike.report_broken
+      station.dock(bike)
+      van = Van.new
+      garage = Garage.new
+      van.collect_broken_bikes(station)
+      van.drops_broken_bikes(garage)
+      expect(garage.bikes).to eq [bike]
+    end
+  end
 
 
       

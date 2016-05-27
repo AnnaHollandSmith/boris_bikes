@@ -9,10 +9,11 @@ describe DockingStation do
   it {is_expected.to respond_to (:bikes)}
 
   describe '#release_bike' do
+    let(:bike) {double (:bike)}
     describe 'releasing when there are no broken bikes' do
       it 'releases a bike if bikes are available' do
         #bike = Bike.new
-        bike = double(:bike)
+        allow(bike).to receive(:broken?).and_return(!true)
         subject.dock(bike)
         expect(subject.release_bike).to eq bike
       end
@@ -24,7 +25,8 @@ describe DockingStation do
       it 'doesn\'t release latest bike when latest bike is broken' do
         station = DockingStation.new(1)
         #bike = Bike.new
-        bike = double(:bike)
+        allow(bike).to receive(:report_broken)
+        allow(bike).to receive(:broken?).and_return(true)
         bike.report_broken
         station.dock(bike)
         expect{station.release_bike}.to raise_error("Sorry, there are no working bikes available!")
@@ -33,15 +35,21 @@ describe DockingStation do
         station = DockingStation.new
         bike1 = double(:bike1)
         bike2 = double(:bike2)
+        allow(bike1).to receive(:report_broken)
+        allow(bike1).to receive(:broken?).and_return(true)
+        allow(bike2).to receive(:broken?).and_return(!true)
         bike1.report_broken
         station.dock(bike2)
         station.dock(bike1)
         expect{station.release_bike}.not_to raise_error
       end
-      it 'raises error already removed all working bikes' do
+      it 'raises error when already removed all working bikes' do
         station = DockingStation.new
         bike1 = double(:bike1)
         bike2 = double(:bike2)
+        allow(bike1).to receive(:report_broken)
+        allow(bike1).to receive(:broken?).and_return(true)
+        allow(bike2).to receive(:broken?).and_return(!true)
         bike1.report_broken
         station.dock(bike2)
         station.dock(bike1)
@@ -55,6 +63,8 @@ describe DockingStation do
     it 'releases working bikes' do
       #bike = Bike.new
       bike = double(:bike)
+      allow(bike).to receive(:broken?).and_return(!true)
+      allow(bike).to receive(:working?).and_return(true)
       subject.dock(bike)
       subject.release_bike
   	  expect(bike).to be_working

@@ -1,3 +1,7 @@
 --color
 --require spec_helper
+<<<<<<< HEAD
 -fd
+=======
+--format documentation
+>>>>>>> dayfour
